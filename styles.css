@@ -113,7 +113,7 @@ body {
     position: relative;
     width: 380px;
     height: 700px;
-    transition: height 0.3s ease;
+    transition: height 0.3s ease, box-shadow 0.3s ease;
     border-radius: 30px;
     overflow: hidden;
     resize: both;
@@ -121,7 +121,11 @@ body {
     min-height: 700px;
     max-width: 800px;
     max-height: 1200px;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    box-shadow: 
+        0 0 20px rgba(var(--glow-color-1), 0.3),
+        0 0 40px rgba(var(--glow-color-2), 0.3),
+        inset 0 0 20px rgba(var(--glow-color-1), 0.1),
+        inset 0 0 40px rgba(var(--glow-color-2), 0.1);
 }
 
 .calculator-container.scientific-mode {
@@ -135,14 +139,18 @@ body {
             0 0 15px rgba(var(--glow-color-1), 0.3),
             0 0 30px rgba(var(--glow-color-2), 0.3),
             0 0 45px rgba(var(--glow-color-1), 0.2),
-            0 0 60px rgba(var(--glow-color-2), 0.1);
+            0 0 60px rgba(var(--glow-color-2), 0.1),
+            inset 0 0 15px rgba(var(--glow-color-1), 0.1),
+            inset 0 0 30px rgba(var(--glow-color-2), 0.1);
     }
     50% {
         box-shadow: 
             0 0 30px rgba(var(--glow-color-1), 0.5),
             0 0 60px rgba(var(--glow-color-2), 0.5),
             0 0 90px rgba(var(--glow-color-1), 0.3),
-            0 0 120px rgba(var(--glow-color-2), 0.2);
+            0 0 120px rgba(var(--glow-color-2), 0.2),
+            inset 0 0 30px rgba(var(--glow-color-1), 0.2),
+            inset 0 0 60px rgba(var(--glow-color-2), 0.2);
     }
 }
 
@@ -468,47 +476,53 @@ button span {
 }
 
 @keyframes amoledGlow {
-    0% {
-        box-shadow: 0 0 15px rgba(128, 128, 128, 0.3),
-                    0 0 30px rgba(64, 64, 64, 0.3);
+    0%, 100% {
+        box-shadow: 
+            0 0 20px rgba(128, 128, 128, 0.3),
+            0 0 40px rgba(64, 64, 64, 0.3),
+            inset 0 0 20px rgba(128, 128, 128, 0.1),
+            inset 0 0 40px rgba(64, 64, 64, 0.1);
     }
     50% {
-        box-shadow: 0 0 30px rgba(128, 128, 128, 0.5),
-                    0 0 60px rgba(64, 64, 64, 0.5);
-    }
-    100% {
-        box-shadow: 0 0 15px rgba(128, 128, 128, 0.3),
-                    0 0 30px rgba(64, 64, 64, 0.3);
+        box-shadow: 
+            0 0 40px rgba(128, 128, 128, 0.5),
+            0 0 80px rgba(64, 64, 64, 0.5),
+            inset 0 0 40px rgba(128, 128, 128, 0.2),
+            inset 0 0 80px rgba(64, 64, 64, 0.2);
     }
 }
 
 @keyframes lightGlow {
-    0% {
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3),
-                    0 0 40px rgba(224, 224, 224, 0.3);
+    0%, 100% {
+        box-shadow: 
+            0 0 20px rgba(255, 255, 255, 0.3),
+            0 0 40px rgba(224, 224, 224, 0.3),
+            inset 0 0 20px rgba(255, 255, 255, 0.1),
+            inset 0 0 40px rgba(224, 224, 224, 0.1);
     }
     50% {
-        box-shadow: 0 0 40px rgba(255, 255, 255, 0.5),
-                    0 0 80px rgba(224, 224, 224, 0.5);
-    }
-    100% {
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3),
-                    0 0 40px rgba(224, 224, 224, 0.3);
+        box-shadow: 
+            0 0 40px rgba(255, 255, 255, 0.5),
+            0 0 80px rgba(224, 224, 224, 0.5),
+            inset 0 0 40px rgba(255, 255, 255, 0.2),
+            inset 0 0 80px rgba(224, 224, 224, 0.2);
     }
 }
 
 @keyframes liquidGlow {
-    0% {
-        box-shadow: 0 0 15px rgba(0, 255, 240, 0.3),
-                    0 0 30px rgba(255, 0, 247, 0.3);
+    0%, 100% {
+        box-shadow: 
+            0 0 20px rgba(0, 255, 240, 0.3),
+            0 0 40px rgba(255, 0, 247, 0.3),
+            inset 0 0 20px rgba(0, 255, 240, 0.1),
+            inset 0 0 40px rgba(255, 0, 247, 0.1);
     }
     50% {
-        box-shadow: 0 0 30px rgba(0, 255, 240, 0.5),
-                    0 0 60px rgba(255, 0, 247, 0.5);
-    }
-    100% {
-        box-shadow: 0 0 15px rgba(0, 255, 240, 0.3),
-                    0 0 30px rgba(255, 0, 247, 0.3);
+        box-shadow: 
+            0 0 40px rgba(0, 255, 240, 0.5),
+            0 0 80px rgba(255, 0, 247, 0.5),
+            inset 0 0 40px rgba(0, 255, 240, 0.2),
+            inset 0 0 80px rgba(255, 0, 247, 0.2);
     }
 }
 
