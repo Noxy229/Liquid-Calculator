@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liquid Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body class="liquid-theme">
+    <div class="calculator-container">
+        <div class="bubble-background"></div>
+        <div class="calculator">
+            <!-- Settings Panel -->
+            <div class="settings-panel">
+                <div class="settings-header">
+                    <button class="control-btn settings-back-btn" data-action="settings-back">
+                        <span class="material-icons">settings</span>
+                    </button>
+                    <h3>Design</h3>
+                </div>
+                <div class="settings-sections">
+                    <div class="settings-section themes-section">
+                        <h4>Themes</h4>
+                        <div class="theme-options">
+                            <button class="theme-btn active" data-theme="liquid">
+                                <span class="theme-preview liquid"></span>
+                                <span class="theme-name">Liquid</span>
+                            </button>
+                            <button class="theme-btn" data-theme="amoled">
+                                <span class="theme-preview amoled"></span>
+                                <span class="theme-name">AMOLED</span>
+                            </button>
+                            <button class="theme-btn" data-theme="light">
+                                <span class="theme-preview light"></span>
+                                <span class="theme-name">Hell</span>
+                            </button>
+                            <button class="theme-btn" data-theme="neon">
+                                <span class="theme-preview neon"></span>
+                                <span class="theme-name">Neon</span>
+                            </button>
+                            <button class="theme-btn" data-theme="glass">
+                                <span class="theme-preview glass"></span>
+                                <span class="theme-name">Glas</span>
+                            </button>
+                            <button class="theme-btn" data-theme="midnight">
+                                <span class="theme-preview midnight"></span>
+                                <span class="theme-name">Midnight</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section preferences-section">
+                        <h4>Einstellungen</h4>
+                        <div class="preferences-options">
+                            <div class="preference-option">
+                                <label>Sprache</label>
+                                <select id="language">
+                                    <option value="de">Deutsch</option>
+                                    <option value="en">English</option>
+                                    <option value="fr">Français</option>
+                                    <option value="es">Español</option>
+                                </select>
+                            </div>
+                            <div class="preference-option">
+                                <label>Dezimaltrennzeichen</label>
+                                <select id="decimal">
+                                    <option value=",">Komma (,)</option>
+                                    <option value=".">Punkt (.)</option>
+                                </select>
+                            </div>
+                            <div class="preference-option checkbox">
+                                <label>Tausendertrennzeichen</label>
+                                <input type="checkbox" id="thousandsSeparator" checked>
+                            </div>
+                            <div class="preference-option">
+                                <label>Nachkommastellen</label>
+                                <input type="number" id="decimals" min="0" max="10" value="2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section behavior-section">
+                        <h4>Verhalten</h4>
+                        <div class="behavior-options">
+                            <div class="behavior-option checkbox">
+                                <label>Sound-Effekte</label>
+                                <input type="checkbox" id="soundEffects">
+                            </div>
+                            <div class="behavior-option checkbox">
+                                <label>Vibration</label>
+                                <input type="checkbox" id="vibration">
+                            </div>
+                            <div class="behavior-option checkbox">
+                                <label>Automatisch in wissenschaftlichen Modus</label>
+                                <input type="checkbox" id="autoScientific">
+                            </div>
+                            <div class="behavior-option">
+                                <label>Animation Geschwindigkeit</label>
+                                <input type="range" id="animationSpeed" min="0.5" max="2" step="0.1" value="1">
+                            </div>
+                            <div class="behavior-option checkbox">
+                                <label>Ergebnis automatisch kopieren</label>
+                                <input type="checkbox" id="autoCopy">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section display-section">
+                        <h4>Anzeige</h4>
+                        <div class="display-options">
+                            <div class="display-option">
+                                <label>Schriftgröße</label>
+                                <input type="range" id="fontSize" min="0.8" max="1.5" step="0.1" value="1">
+                            </div>
+                            <div class="display-option checkbox">
+                                <label>Große Tasten</label>
+                                <input type="checkbox" id="largeButtons">
+                            </div>
+                            <div class="display-option checkbox">
+                                <label>Hoher Kontrast</label>
+                                <input type="checkbox" id="highContrast">
+                            </div>
+                            <div class="display-option">
+                                <label>Helligkeit</label>
+                                <input type="range" id="brightness" min="0.5" max="1.5" step="0.1" value="1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section glow-section">
+                        <h4>Beleuchtung</h4>
+                        <div class="glow-controls">
+                            <div class="glow-option">
+                                <label>Effekt</label>
+                                <select id="glowMode">
+                                    <option value="static">Statisch</option>
+                                    <option value="breathe">Atmen</option>
+                                    <option value="wave">Welle</option>
+                                    <option value="rainbow">Regenbogen</option>
+                                    <option value="pulse">Pulsieren</option>
+                                    <option value="off">Aus</option>
+                                </select>
+                            </div>
+                            <div class="glow-option">
+                                <label>Farbe</label>
+                                <div class="color-picker">
+                                    <input type="color" id="glowColor" value="#9c27b0">
+                                </div>
+                            </div>
+                            <div class="glow-option">
+                                <label>Rate</label>
+                                <div class="glow-slider-container">
+                                    <input type="range" class="glow-slider" id="glowSpeed" min="100" max="5000" step="100" value="2000">
+                                    <span class="glow-value">2000ms</span>
+                                </div>
+                            </div>
+                            <div class="glow-option">
+                                <label>Helligkeit</label>
+                                <div class="glow-slider-container">
+                                    <input type="range" class="glow-slider" id="glowIntensity" min="0" max="100" value="100">
+                                    <span class="glow-value">100%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section dev-section">
+                        <div class="dev-header">
+                            <h4>Developer Settings</h4>
+                            <button class="dev-toggle">
+                                <span class="material-icons">code</span>
+                            </button>
+                        </div>
+                        <div class="dev-options">
+                            <div class="dev-option">
+                                <label>Hintergrundbild</label>
+                                <input type="file" id="bgImage" accept="image/*">
+                            </div>
+                            <div class="dev-option">
+                                <label>YouTube Video-ID</label>
+                                <input type="text" id="ytVideo" placeholder="z.B. dQw4w9WgXcQ">
+                            </div>
+                            <div class="dev-option">
+                                <label>Blur-Stärke</label>
+                                <input type="range" id="blurStrength" min="0" max="50" value="25">
+                            </div>
+                            <div class="dev-option">
+                                <label>Transparenz</label>
+                                <input type="range" id="opacity" min="0" max="100" value="74">
+                            </div>
+                            <div class="dev-option">
+                                <label>Animation Speed</label>
+                                <input type="range" id="animSpeed" min="0.5" max="2" step="0.1" value="1">
+                            </div>
+                            <div class="dev-option checkbox">
+                                <label>Debug Mode</label>
+                                <input type="checkbox" id="debugMode">
+                            </div>
+                            <button class="dev-reset" data-action="reset-dev">
+                                Zurücksetzen
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section about-section">
+                        <h4>Über</h4>
+                        <div class="about-content">
+                            <p>Version: 1.0.0</p>
+                            <p>© 2024 Liquid Calculator</p>
+                            <div class="about-links">
+                                <a href="#" class="about-link">Changelog</a>
+                                <a href="#" class="about-link">Datenschutz</a>
+                                <a href="#" class="about-link">Lizenz</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="top-controls">
+                <button class="control-btn settings-btn" data-action="settings">
+                    <span class="material-icons">settings</span>
+                </button>
+                <button class="control-btn mode-btn" data-mode="scientific">
+                    <span class="material-icons">science</span>
+                </button>
+            </div>
+
+            <div class="display">
+                <div class="previous-operand"></div>
+                <div class="current-operand">0</div>
+            </div>
+
+            <div class="buttons-container">
+                <div class="scientific-buttons">
+                    <button class="scientific" data-action="leftParen"><span>(</span></button>
+                    <button class="scientific" data-action="rightParen"><span>)</span></button>
+                    <button class="scientific" data-action="rad"><span>RAD</span></button>
+                    <button class="scientific" data-action="factorial"><span>n!</span></button>
+                    
+                    <button class="scientific" data-action="sin"><span>sin</span></button>
+                    <button class="scientific" data-action="cos"><span>cos</span></button>
+                    <button class="scientific" data-action="tan"><span>tan</span></button>
+                    <button class="scientific" data-action="inv"><span>1/x</span></button>
+                    
+                    <button class="scientific" data-action="sqrt"><span>√</span></button>
+                    <button class="scientific" data-action="pow"><span>xʸ</span></button>
+                    <button class="scientific" data-action="log"><span>log</span></button>
+                    <button class="scientific" data-action="ln"><span>ln</span></button>
+                    
+                    <button class="scientific" data-action="pi"><span>π</span></button>
+                    <button class="scientific" data-action="e"><span>e</span></button>
+                    <button class="scientific" data-action="abs"><span>|x|</span></button>
+                    <button class="scientific" data-action="exp"><span>eˣ</span></button>
+                </div>
+                
+                <div class="standard-buttons">
+                    <button class="special" data-action="clear"><span>AC</span></button>
+                    <button class="special" data-action="delete"><span>DEL</span></button>
+                    <button class="special" data-action="percent"><span>%</span></button>
+                    <button class="operator" data-action="divide"><span>÷</span></button>
+                    
+                    <button class="number"><span>7</span></button>
+                    <button class="number"><span>8</span></button>
+                    <button class="number"><span>9</span></button>
+                    <button class="operator" data-action="multiply"><span>×</span></button>
+                    
+                    <button class="number"><span>4</span></button>
+                    <button class="number"><span>5</span></button>
+                    <button class="number"><span>6</span></button>
+                    <button class="operator" data-action="subtract"><span>-</span></button>
+                    
+                    <button class="number"><span>1</span></button>
+                    <button class="number"><span>2</span></button>
+                    <button class="number"><span>3</span></button>
+                    <button class="operator" data-action="add"><span>+</span></button>
+                    
+                    <button class="number span-2"><span>0</span></button>
+                    <button class="number"><span>.</span></button>
+                    <button class="operator" data-action="equals"><span>=</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 

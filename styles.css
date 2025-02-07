@@ -1,0 +1,1733 @@
+:root {
+    --primary: #00fff0;
+    --secondary: #ff00f7;
+    --dark: #1a1a1a;
+    --light: #ffffff;
+    --background: #000000;
+    --calculator-bg: rgba(255, 255, 255, 0.1);
+    --button-bg: rgba(255, 255, 255, 0.1);
+    --display-bg: rgba(0, 0, 0, 0.3);
+    --text: var(--light);
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --glow-color-1: var(--primary);
+    --glow-color-2: var(--secondary);
+}
+
+/* AMOLED Theme */
+.amoled-theme {
+    --background: #000000;
+    --calculator-bg: rgba(20, 20, 20, 0.8);
+    --button-bg: rgba(30, 30, 30, 0.9);
+    --display-bg: #000000;
+    --text: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.8);
+    --glow-color-1: #9c27b0;
+    --glow-color-2: #673ab7;
+    --button-border: rgba(255, 255, 255, 0.1);
+}
+
+.amoled-theme button {
+    border: 1px solid var(--button-border);
+    background: var(--button-bg);
+}
+
+.amoled-theme .operator {
+    border: 1px solid rgba(156, 39, 176, 0.3);
+    background: linear-gradient(45deg, #9c27b0, #673ab7);
+}
+
+.amoled-theme .special {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Light Theme */
+.light-theme {
+    --background: #000000;
+    --calculator-bg: rgba(255, 255, 255, 0.95);
+    --settings-bg: rgba(240, 240, 240, 0.9);
+    --button-bg: #e0e0e0;
+    --display-bg: #ffffff;
+    --text: #333333;
+    --text-secondary: rgba(0, 0, 0, 0.7);
+    --glow-color-1: #ffffff;
+    --glow-color-2: #e0e0e0;
+}
+
+.light-theme button {
+    background: var(--button-bg);
+    color: #000000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .operator {
+    background: linear-gradient(45deg, #2196f3, #00bcd4);
+    color: white;
+}
+
+.light-theme .special {
+    background: #9e9e9e;
+    color: white;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--background);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.theme-switcher {
+    position: fixed;
+    top: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+}
+
+.theme-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: var(--calculator-bg);
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.theme-btn.active {
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+}
+
+.calculator-container {
+    position: relative;
+    width: 380px;
+    height: 700px;
+    transition: height 0.3s ease;
+    border-radius: 30px;
+    overflow: hidden;
+    resize: both;
+    min-width: 380px;
+    min-height: 700px;
+    max-width: 800px;
+    max-height: 1200px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.calculator-container.scientific-mode {
+    height: 850px;
+    min-height: 850px;
+}
+
+@keyframes containerGlow {
+    0%, 100% {
+        box-shadow: 
+            0 0 15px rgba(var(--glow-color-1), 0.3),
+            0 0 30px rgba(var(--glow-color-2), 0.3),
+            0 0 45px rgba(var(--glow-color-1), 0.2),
+            0 0 60px rgba(var(--glow-color-2), 0.1);
+    }
+    50% {
+        box-shadow: 
+            0 0 30px rgba(var(--glow-color-1), 0.5),
+            0 0 60px rgba(var(--glow-color-2), 0.5),
+            0 0 90px rgba(var(--glow-color-1), 0.3),
+            0 0 120px rgba(var(--glow-color-2), 0.2);
+    }
+}
+
+.mode-toggle {
+    position: absolute;
+    top: -40px;
+    right: 10px;
+    z-index: 2;
+}
+
+.mode-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--calculator-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.mode-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.mode-btn span {
+    position: relative;
+    z-index: 2;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    display: block;
+}
+
+.mode-btn.active {
+    transform: rotate(360deg);
+}
+
+.mode-btn.active::before {
+    opacity: 1;
+}
+
+.mode-btn:hover {
+    transform: scale(1.1);
+}
+
+.mode-btn.active:hover {
+    transform: scale(1.1) rotate(360deg);
+}
+
+.bubble-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.bubble-background::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    opacity: 0.3;
+    filter: blur(30px);
+    animation: backgroundFlow 10s ease-in-out infinite;
+}
+
+@keyframes backgroundFlow {
+    0%, 100% { transform: translateY(-20px) scale(1); }
+    50% { transform: translateY(20px) scale(1.1); }
+}
+
+.calculator {
+    position: relative;
+    z-index: 1;
+    background: var(--calculator-bg);
+    backdrop-filter: blur(25px);
+    border-radius: 30px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.display {
+    background: var(--display-bg);
+    border-radius: 20px;
+    padding: 15px;
+    margin-bottom: 15px;
+    text-align: right;
+    height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.previous-operand {
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    min-height: 24px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.current-operand {
+    color: var(--text);
+    font-size: 2.2rem;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.buttons-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow: hidden;
+    padding: 0.5rem;
+}
+
+.standard-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.scientific-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    height: 0;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.calculator-container.scientific-mode .scientific-buttons {
+    height: 240px;
+    opacity: 1;
+    transform: translateY(0);
+    margin-bottom: 10px;
+}
+
+/* Button Styles */
+button {
+    width: 100%;
+    height: 55px;
+    border: none;
+    outline: none;
+    background: var(--button-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    color: var(--text);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    -webkit-tap-highlight-color: transparent;
+    will-change: transform;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+button span {
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+    user-select: none;
+    transform: translateZ(1px);
+    width: 100%;
+    text-align: center;
+}
+
+.scientific button {
+    height: 50px;
+    font-size: 1rem;
+}
+
+.span-2 {
+    grid-column: span 2;
+}
+
+/* Operator und Special Button Styles */
+.operator {
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    font-weight: 700;
+}
+
+.special {
+    background: rgba(255, 255, 255, 0.2);
+    font-weight: 500;
+}
+
+/* Ripple-Effekt anpassen */
+.ripple {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    animation: rippleAnimation 0.5s linear forwards;
+    z-index: 0;
+}
+
+@keyframes rippleAnimation {
+    to {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+}
+
+/* Responsive Anpassungen */
+@media (min-height: 700px) {
+    button {
+        min-height: 55px;
+    }
+    
+    .scientific button {
+        min-height: 45px;
+    }
+}
+
+@media (min-height: 800px) {
+    button {
+        min-height: 65px;
+    }
+    
+    .scientific button {
+        min-height: 50px;
+    }
+}
+
+@keyframes bubble {
+    0% {
+        transform: translateY(0) scale(0);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(-100vh) scale(2);
+        opacity: 0;
+    }
+}
+
+.bubble {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: bubble 4s linear infinite;
+}
+
+.scientific {
+    background: rgba(var(--primary), 0.2);
+    font-size: 1rem;
+}
+
+/* Bubble Animation für Liquid Theme */
+.liquid-theme .bubble-background {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.amoled-theme .bubble-background,
+.light-theme .bubble-background {
+    opacity: 0;
+}
+
+/* Wissenschaftliche Buttons im Light Mode */
+.light-theme .scientific {
+    background: #f0f0f0;
+    color: #000000;
+    font-weight: 500;
+}
+
+.light-theme .scientific:hover {
+    background: #e5e5e5;
+}
+
+/* Spezifische Glow-Effekte für jedes Theme */
+.amoled-theme .calculator-container {
+    animation: amoledGlow 3s ease-in-out infinite;
+}
+
+.light-theme .calculator-container {
+    animation: lightGlow 3s ease-in-out infinite;
+}
+
+.liquid-theme .calculator-container {
+    animation: liquidGlow 3s ease-in-out infinite;
+}
+
+@keyframes amoledGlow {
+    0% {
+        box-shadow: 0 0 15px rgba(128, 128, 128, 0.3),
+                    0 0 30px rgba(64, 64, 64, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(128, 128, 128, 0.5),
+                    0 0 60px rgba(64, 64, 64, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 15px rgba(128, 128, 128, 0.3),
+                    0 0 30px rgba(64, 64, 64, 0.3);
+    }
+}
+
+@keyframes lightGlow {
+    0% {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3),
+                    0 0 40px rgba(224, 224, 224, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(255, 255, 255, 0.5),
+                    0 0 80px rgba(224, 224, 224, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3),
+                    0 0 40px rgba(224, 224, 224, 0.3);
+    }
+}
+
+@keyframes liquidGlow {
+    0% {
+        box-shadow: 0 0 15px rgba(0, 255, 240, 0.3),
+                    0 0 30px rgba(255, 0, 247, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(0, 255, 240, 0.5),
+                    0 0 60px rgba(255, 0, 247, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 15px rgba(0, 255, 240, 0.3),
+                    0 0 30px rgba(255, 0, 247, 0.3);
+    }
+}
+
+/* Wissenschaftlicher Modus verstärkt den Glow */
+@keyframes scientificGlow {
+    0% {
+        box-shadow: 0 0 20px rgba(var(--glow-color-1), 0.4),
+                    0 0 40px rgba(var(--glow-color-2), 0.4),
+                    0 0 60px rgba(var(--glow-color-1), 0.2);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(var(--glow-color-1), 0.6),
+                    0 0 80px rgba(var(--glow-color-2), 0.6),
+                    0 0 120px rgba(var(--glow-color-1), 0.3);
+    }
+    100% {
+        box-shadow: 0 0 20px rgba(var(--glow-color-1), 0.4),
+                    0 0 40px rgba(var(--glow-color-2), 0.4),
+                    0 0 60px rgba(var(--glow-color-1), 0.2);
+    }
+}
+
+/* Top Controls */
+.top-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 0 5px;
+    height: 40px;
+}
+
+.control-btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 50%;
+    background: var(--calculator-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.control-btn .material-icons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.control-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 18px;
+    height: 18px;
+    border-top-right-radius: 22px;
+    border-bottom-left-radius: 22px;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: scale(0);
+}
+
+.control-btn.active::after {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* AMOLED Theme Control Button */
+.amoled-theme .control-btn.active::after {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+/* Light Theme Control Button */
+.light-theme .control-btn.active::after {
+    background: rgba(128, 128, 128, 0.9);
+}
+
+/* Liquid Theme Control Button */
+.liquid-theme .control-btn.active::after {
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+}
+
+.control-btn.active .material-icons {
+    transform: rotate(360deg);
+}
+
+/* Entferne den alten Gradient-Effekt */
+.control-btn::before {
+    content: none;
+}
+
+/* Settings Panel */
+.settings-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgb(0 0 0 / 74%);
+    backdrop-filter: blur(25px);
+    z-index: 10;
+    transform: translateX(-100%);
+    transition: transform 0.2s cubic-bezier(0.17, 0.84, 0.44, 1);
+    will-change: transform;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-panel.active {
+    transform: translateX(0);
+}
+
+/* Settings Panel Header */
+.settings-header {
+    padding: 20px 30px;
+    flex-shrink: 0;
+}
+
+.settings-header .control-btn {
+    transform: rotate(0deg);
+    transition: transform 0.2s cubic-bezier(0.17, 0.84, 0.44, 1);
+    will-change: transform;
+}
+
+.settings-header .control-btn:hover {
+    transform: rotate(-180deg);
+}
+
+.settings-panel.active .settings-header .control-btn {
+    transform: rotate(0deg);
+}
+
+.settings-panel h3 {
+    color: var(--text);
+    font-size: 1.8rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.settings-sections {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 30px 30px 30px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+/* Webkit Scrollbar Styling */
+.settings-sections::-webkit-scrollbar {
+    width: 6px;
+}
+
+.settings-sections::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.settings-sections::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+/* Light Theme Scrollbar */
+.light-theme .settings-sections {
+    scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+}
+
+.light-theme .settings-sections::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.settings-section {
+    margin-bottom: 25px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.settings-section:last-child {
+    margin-bottom: 0;
+}
+
+/* Anpassungen für die Theme-Grid */
+.theme-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 15px;
+    padding: 5px;
+}
+
+.theme-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    border-radius: 16px;
+    background: var(--calculator-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+    will-change: transform;
+}
+
+.theme-preview {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.theme-name {
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Light Theme Anpassungen */
+.light-theme .theme-btn {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.light-theme .theme-preview {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.theme-btn:hover {
+    transform: translateY(-2px);
+}
+
+.theme-btn:active {
+    transform: translateY(0);
+}
+
+.theme-btn.active {
+    border: 2px solid var(--primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Buttons Container */
+.buttons-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow: hidden;
+    padding: 0.5rem;
+}
+
+.standard-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.standard-buttons button {
+    height: 3.75rem;
+    min-height: 2.8125rem;
+    font-size: 1.2rem;
+}
+
+.scientific-buttons button {
+    height: 3.125rem;
+    min-height: 2.5rem;
+    font-size: 1rem;
+}
+
+/* Button Layout Korrekturen */
+.standard-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 10px;
+    flex: 1;
+}
+
+.standard-buttons button {
+    height: 60px;
+    min-height: 45px;
+    font-size: 1.2rem;
+}
+
+.scientific-buttons button {
+    height: 50px;
+    min-height: 40px;
+    font-size: 1rem;
+}
+
+/* Buttons Container Anpassung */
+.buttons-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow: hidden;
+}
+
+.settings-panel.active + .top-controls .settings-btn {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+}
+
+/* Settings Panel im Light Theme */
+.light-theme .settings-panel {
+    background: rgba(128, 128, 128, 0.2);
+    backdrop-filter: blur(25px);
+}
+
+/* Theme Options im Light Theme */
+.light-theme .theme-btn {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.theme-preview.liquid {
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 2px 8px rgba(0, 255, 240, 0.2);
+}
+
+.theme-preview.amoled {
+    background: linear-gradient(45deg, #000000, #1a1a1a);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 2px 8px rgba(255, 255, 255, 0.05);
+}
+
+.theme-preview.light {
+    background: linear-gradient(45deg, #ffffff, #f0f0f0);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Hover-Effekte für die Vorschauen */
+.theme-btn:hover .theme-preview.liquid {
+    box-shadow: inset 0 2px 12px rgba(0, 255, 240, 0.3),
+                0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.theme-btn:hover .theme-preview.amoled {
+    box-shadow: inset 0 2px 12px rgba(255, 255, 255, 0.1),
+                0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.theme-btn:hover .theme-preview.light {
+    box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.08),
+                0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Aktive Zustände */
+.theme-btn.active .theme-preview {
+    transform: scale(1.05);
+}
+
+.theme-options {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.17, 0.84, 0.44, 1);
+    will-change: opacity, transform;
+}
+
+.settings-panel:not(.active) .theme-options {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+/* Neue Theme-Varianten */
+.neon-theme {
+    --background: #0a0a0a;
+    --calculator-bg: rgba(20, 20, 20, 0.9);
+    --button-bg: rgba(30, 30, 30, 0.95);
+    --display-bg: #000000;
+    --text: #fff;
+    --text-secondary: rgba(255, 255, 255, 0.8);
+    --primary: #00ff88;
+    --secondary: #00ffea;
+    --glow-color-1: var(--primary);
+    --glow-color-2: var(--secondary);
+}
+
+.neon-theme button {
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    background: var(--button-bg);
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.1);
+}
+
+.neon-theme .operator {
+    background: linear-gradient(45deg, #00ff88, #00ffea);
+    border: none;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+}
+
+.neon-theme .special {
+    background: rgba(0, 255, 136, 0.15);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.glass-theme {
+    --background: #ffffff;
+    --calculator-bg: rgba(255, 255, 255, 0.1);
+    --button-bg: rgba(255, 255, 255, 0.15);
+    --display-bg: rgba(255, 255, 255, 0.1);
+    --text: #000;
+    --text-secondary: rgba(0, 0, 0, 0.7);
+    --primary: rgba(255, 255, 255, 0.7);
+    --secondary: rgba(255, 255, 255, 0.3);
+}
+
+.glass-theme .calculator {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.glass-theme button {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #000;
+}
+
+.glass-theme .operator {
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.glass-theme .special {
+    background: rgba(0, 0, 0, 0.1);
+    color: #000;
+}
+
+.midnight-theme {
+    --background: #1a1b2e;
+    --calculator-bg: rgba(28, 29, 49, 0.95);
+    --button-bg: rgba(40, 42, 70, 0.9);
+    --display-bg: rgba(20, 21, 35, 1);
+    --text: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --primary: #7b2ff7;
+    --secondary: #f72f93;
+    --glow-color-1: var(--primary);
+    --glow-color-2: var(--secondary);
+}
+
+.midnight-theme button {
+    background: var(--button-bg);
+    border: 1px solid rgba(123, 47, 247, 0.2);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.midnight-theme .operator {
+    background: linear-gradient(45deg, #7b2ff7, #f72f93);
+    border: none;
+}
+
+.midnight-theme .special {
+    background: rgba(123, 47, 247, 0.2);
+    border: 1px solid rgba(123, 47, 247, 0.3);
+}
+
+/* Neue Theme-Vorschauen */
+.theme-preview.neon {
+    background: linear-gradient(45deg, #00ff88, #00ffea);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+}
+
+.theme-preview.glass {
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2));
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.theme-preview.midnight {
+    background: linear-gradient(45deg, #7b2ff7, #f72f93);
+    border: 1px solid rgba(123, 47, 247, 0.3);
+    box-shadow: 0 0 20px rgba(123, 47, 247, 0.2);
+}
+
+/* Hover-Effekte für neue Themes */
+.theme-btn:hover .theme-preview.neon {
+    box-shadow: 0 0 25px rgba(0, 255, 136, 0.3);
+}
+
+.theme-btn:hover .theme-preview.glass {
+    box-shadow: 0 8px 32px rgba(255, 255, 255, 0.2);
+}
+
+.theme-btn:hover .theme-preview.midnight {
+    box-shadow: 0 0 25px rgba(123, 47, 247, 0.3);
+}
+
+/* Verbesserte Theme-Button-Animation */
+.theme-btn {
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-btn:hover {
+    transform: translateY(-5px);
+}
+
+.theme-btn.active {
+    transform: scale(1.05);
+    border: 2px solid var(--primary);
+}
+
+/* Developer Settings Styles */
+.settings-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.settings-section {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.settings-section h4 {
+    color: var(--text);
+    font-size: 1.2rem;
+    margin: 0 0 20px 0;
+    font-weight: 500;
+}
+
+.dev-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dev-toggle {
+    background: none;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.dev-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.dev-options {
+    display: grid;
+    gap: 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.dev-options.active {
+    max-height: 500px;
+}
+
+.dev-option {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dev-option label {
+    color: var(--text);
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.dev-option input[type="text"],
+.dev-option input[type="file"] {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.dev-option input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    outline: none;
+}
+
+.dev-option input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--primary);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.dev-option input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.dev-option.checkbox {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dev-option input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+}
+
+.dev-option input[type="checkbox"]:checked::before {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--primary);
+    font-size: 14px;
+}
+
+.dev-reset {
+    background: rgba(255, 0, 0, 0.2);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    color: var(--text);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.dev-reset:hover {
+    background: rgba(255, 0, 0, 0.3);
+}
+
+/* Light Theme Anpassungen für Developer Settings */
+.light-theme .settings-section {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.light-theme .dev-option input[type="text"],
+.light-theme .dev-option input[type="file"] {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: var(--text);
+}
+
+.light-theme .dev-option input[type="range"] {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .dev-reset {
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid rgba(255, 0, 0, 0.2);
+}
+
+/* Background Container für Medien */
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.background-image,
+.background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Neue Settings Styles */
+.preferences-options,
+.behavior-options,
+.display-options {
+    display: grid;
+    gap: 15px;
+}
+
+.preference-option,
+.behavior-option,
+.display-option {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.preference-option label,
+.behavior-option label,
+.display-option label {
+    color: var(--text);
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Select Styling Verbesserung */
+select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-size: 0.9rem;
+    width: 100%;
+    cursor: pointer;
+    appearance: none;
+    position: relative;
+}
+
+select option {
+    background: var(--calculator-bg);
+    color: var(--text);
+    padding: 8px;
+}
+
+.light-theme select option {
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--text);
+}
+
+/* Glow Controls */
+.glow-controls {
+    display: grid;
+    gap: 20px;
+    padding: 5px;
+}
+
+.glow-option {
+    background: rgba(20, 20, 20, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.glow-option:hover {
+    background: rgba(30, 30, 30, 0.7);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.glow-option label {
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 12px;
+    display: block;
+    opacity: 0.9;
+}
+
+/* Verbessertes Dropdown */
+.glow-option select {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(30, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    font-size: 1rem;
+    cursor: pointer;
+    appearance: none;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.glow-option select:hover {
+    background: rgba(40, 40, 40, 0.95);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.glow-option select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(var(--primary), 0.2);
+}
+
+/* Dropdown Pfeil */
+.glow-option {
+    position: relative;
+}
+
+.glow-option::after {
+    content: '▼';
+    position: absolute;
+    right: 35px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text);
+    pointer-events: none;
+    font-size: 0.8rem;
+    opacity: 0.7;
+    transition: transform 0.3s ease;
+}
+
+.glow-option:hover::after {
+    opacity: 1;
+}
+
+.glow-option select:focus + .glow-option::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/* Dropdown Optionen */
+.glow-option select option {
+    background: rgba(20, 20, 20, 0.95);
+    color: var(--text);
+    padding: 12px;
+    font-size: 0.95rem;
+}
+
+/* Verbesserte Slider */
+.glow-slider-container {
+    position: relative;
+    padding: 10px 0;
+}
+
+.glow-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    outline: none;
+}
+
+.glow-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--primary);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px var(--primary);
+}
+
+.glow-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 15px var(--primary);
+}
+
+.glow-slider::-webkit-slider-runnable-track {
+    background: linear-gradient(90deg, 
+        var(--primary) var(--value, 0%), 
+        rgba(255, 255, 255, 0.1) var(--value, 0%));
+    border-radius: 2px;
+    height: 4px;
+}
+
+.glow-value {
+    position: absolute;
+    right: 0;
+    top: -25px;
+    min-width: 60px;
+    text-align: right;
+    color: var(--text);
+    font-size: 0.9rem;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+/* Verbesserte Farbauswahl */
+.color-picker {
+    position: relative;
+    width: 100%;
+    height: 45px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.color-picker input[type="color"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 12px;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.color-picker input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.color-picker input[type="color"]::-webkit-color-swatch {
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+}
+
+/* Light Theme Anpassungen */
+.light-theme .glow-option {
+    background: rgba(240, 240, 240, 0.9);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .glow-option select {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: var(--text);
+}
+
+.light-theme .glow-option select option {
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--text);
+}
+
+.light-theme .glow-slider {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .glow-slider::-webkit-slider-thumb {
+    background: var(--primary);
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.light-theme .color-picker input[type="color"]::-webkit-color-swatch {
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Glow Animationen */
+@keyframes breatheGlow {
+    0%, 100% {
+        box-shadow: 0 0 10px var(--glow-color-1),
+                   0 0 20px var(--glow-color-2);
+    }
+    50% {
+        box-shadow: 0 0 30px var(--glow-color-1),
+                   0 0 60px var(--glow-color-2);
+    }
+}
+
+@keyframes rainbowGlow {
+    0% { box-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000; }
+    17% { box-shadow: 0 0 20px #ff8800, 0 0 40px #ff8800; }
+    33% { box-shadow: 0 0 20px #ffff00, 0 0 40px #ffff00; }
+    50% { box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00; }
+    67% { box-shadow: 0 0 20px #0088ff, 0 0 40px #0088ff; }
+    83% { box-shadow: 0 0 20px #0000ff, 0 0 40px #0000ff; }
+    100% { box-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000; }
+}
+
+@keyframes waveGlow {
+    0% { box-shadow: -20px 0 20px var(--glow-color-1); }
+    50% { box-shadow: 20px 0 20px var(--glow-color-2); }
+    100% { box-shadow: -20px 0 20px var(--glow-color-1); }
+}
+
+@keyframes sparkleGlow {
+    0%, 100% { 
+        box-shadow: 10px 10px 20px var(--glow-color-1),
+                   -10px -10px 20px var(--glow-color-2); 
+    }
+    25% { 
+        box-shadow: -10px 10px 20px var(--glow-color-2),
+                   10px -10px 20px var(--glow-color-1); 
+    }
+    50% { 
+        box-shadow: -10px -10px 20px var(--glow-color-1),
+                   10px 10px 20px var(--glow-color-2); 
+    }
+    75% { 
+        box-shadow: 10px -10px 20px var(--glow-color-2),
+                   -10px 10px 20px var(--glow-color-1); 
+    }
+}
+
+/* Glow Modi Klassen */
+.calculator-container.glow-static {
+    animation: none !important;
+    box-shadow: 0 0 20px var(--glow-color-1),
+                0 0 40px var(--glow-color-2);
+}
+
+.calculator-container.glow-breathe {
+    animation: breatheGlow 3s ease-in-out infinite !important;
+}
+
+.calculator-container.glow-rainbow {
+    animation: rainbowGlow 7s linear infinite !important;
+}
+
+.calculator-container.glow-wave {
+    animation: waveGlow 3s ease-in-out infinite !important;
+}
+
+.calculator-container.glow-sparkle {
+    animation: sparkleGlow 3s linear infinite !important;
+}
+
+.calculator-container.glow-off {
+    animation: none !important;
+    box-shadow: none !important;
+}
+
+/* Settings Button Styles */
+.settings-section button,
+.settings-section select,
+.settings-section input[type="text"],
+.settings-section input[type="number"] {
+    width: 100%;
+    padding: 15px 20px;
+    border-radius: 16px;
+    background: rgba(30, 30, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.settings-section button:hover,
+.settings-section select:hover {
+    transform: translateY(-2px);
+    background: rgba(40, 40, 40, 0.8);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.settings-section button:active {
+    transform: translateY(0);
+}
+
+/* Theme Buttons verbessern */
+.theme-btn {
+    height: 160px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background: rgba(30, 30, 30, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-btn:hover {
+    transform: translateY(-4px);
+    background: rgba(40, 40, 40, 0.8);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.theme-btn.active {
+    background: rgba(var(--primary), 0.15);
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 20px rgba(var(--primary), 0.2);
+}
+
+.theme-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.theme-name {
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Checkbox Styling verbessern */
+.settings-section input[type="checkbox"] {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(30, 30, 30, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.settings-section input[type="checkbox"]:checked {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.settings-section input[type="checkbox"]:checked::before {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.settings-section input[type="checkbox"]:hover {
+    transform: scale(1.1);
+    border-color: var(--primary);
+}
+
+/* Range Input Styling verbessern */
+.settings-section input[type="range"] {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.settings-section input[type="range"]::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+    background: var(--primary);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(var(--primary), 0.3);
+    transition: all 0.3s ease;
+}
+
+.settings-section input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 15px rgba(var(--primary), 0.5);
+}
+
+/* Label Styling verbessern */
+.settings-section label {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: var(--text);
+    opacity: 0.9;
+}
+
+/* Settings Section Headers verbessern */
+.settings-section h4 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: var(--text);
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.settings-section h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 2px;
+}
+
+/* Resize Handle */
+.calculator-container::after {
+    content: '';
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    width: 15px;
+    height: 15px;
+    border-right: 2px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    cursor: se-resize;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.calculator-container:hover::after {
+    border-color: var(--primary);
+}
+
+/* Light Theme Anpassungen */
+.light-theme .calculator-container::after {
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.light-theme .calculator-container:hover::after {
+    border-color: var(--primary);
+} 
