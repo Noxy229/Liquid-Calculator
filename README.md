@@ -1,5 +1,7 @@
 # Liquid Calculator
 
+![Liquid Calculator Preview](Preview.png)
+
 Ein moderner, wissenschaftlicher Taschenrechner mit mehreren Themes und erweiterten Funktionen.
 
 ## Features
